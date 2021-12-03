@@ -29,7 +29,13 @@ if __name__ == '__main__':
 
 
 def parse_cookie(query: str) -> dict:
-    return {}
+    dct = {}
+    txt = query.split(';')
+    for i in txt:
+        if '=' in i:
+            i = i.split('=')
+            dct.update({i[0]: '='.join(i[1:])})
+    return dct
 
 
 if __name__ == '__main__':
@@ -37,3 +43,13 @@ if __name__ == '__main__':
     assert parse_cookie('') == {}
     assert parse_cookie('name=Dima;age=28;') == {'name': 'Dima', 'age': '28'}
     assert parse_cookie('name=Dima=User;age=28;') == {'name': 'Dima=User', 'age': '28'}
+    assert parse_cookie('name=Dima;age=54;') == {'name': 'Dima', 'age': '54'}
+    assert parse_cookie('name=Dima;gender=male;') == {'name': 'Dima', 'gender': 'male'}
+    assert parse_cookie('name=Sveta;gender=female;') == {'name': 'Sveta', 'gender': 'female'}
+    assert parse_cookie('??????????') == {}
+    assert parse_cookie('name=Dima;:') == {'name': 'Dima'}
+    assert parse_cookie('name=Dima;;') == {'name': 'Dima'}
+    assert parse_cookie(';name=Dima;') == {'name': 'Dima'}
+    assert parse_cookie('None') == {}
+    assert parse_cookie('True/False') == {}
+    assert parse_cookie('name=Dima;age=94;color=purple;') == {'name': 'Dima', 'age': '94', 'color': 'purple'}
