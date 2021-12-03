@@ -1,5 +1,13 @@
 def parse(query: str) -> dict:
-    return {}
+    dct = {}
+    if 'name' not in query:
+        return dct
+    new_query = query.split('?')[1].split('&')
+    for pair in new_query:
+        if '=' in pair:
+            key, value = pair.split('=')
+            dct.update({key: value})
+    return dct
 
 
 if __name__ == '__main__':
@@ -8,6 +16,16 @@ if __name__ == '__main__':
     assert parse('http://example.com/') == {}
     assert parse('http://example.com/?') == {}
     assert parse('http://example.com/?name=Dima') == {'name': 'Dima'}
+    assert parse('http://example.com/?example') == {}
+    assert parse('http://example.com/?????') == {}
+    assert parse('http://example.com/?name=Anton') == {'name': 'Anton'}
+    assert parse('http://example.com/error/') == {}
+    assert parse('http://example.com.com.ua/?name=Anton?/') == {'name': 'Anton'}
+    assert parse('http://example.com/http://example.com/?name=Dima') == {'name': 'Dima'}
+    assert parse('http://example.com/?/?') == {}
+    assert parse('https://example.com/path/to/page?name=ferret&color=purple?') == {'name': 'ferret', 'color': 'purple'}
+    assert parse('http://example.com/?///?') == {}
+    assert parse('http://example.com/?name=Stas&color=green-blue?') == {'name': 'Stas', 'color': 'green-blue'}
 
 
 def parse_cookie(query: str) -> dict:
